@@ -4,6 +4,8 @@ import com.company.lib.dao.BookDAO;
 import com.company.lib.dao.UploadDAO;
 import com.company.lib.dao.UserDAO;
 import com.company.lib.service.auth.UserServiceImpl;
+import com.company.lib.service.book.BookServiceImpl;
+import com.company.lib.service.file.FileStorageServiceImpl;
 import com.company.lib.utils.BaseUtils;
 
 /**

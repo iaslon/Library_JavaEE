@@ -26,9 +26,9 @@ public class BookServiceImpl extends AbstractDAO<BookDAO> implements BookService
 
 
     private static BookServiceImpl bookService;
-    private final FileStorageServiceImpl fileStorageService = ApplicationContextHolder.getBean(FileStorageServxiceImpl.class);
+    private final FileStorageServiceImpl fileStorageService = ApplicationContextHolder.getBean(FileStorageServiceImpl.class);
 
-    public BookServiceImpl(BookDAO dao) {
+    public BookServiceImpl() {
         super(ApplicationContextHolder.getBean(BookDAO.class));
     }
 
@@ -85,5 +85,12 @@ public class BookServiceImpl extends AbstractDAO<BookDAO> implements BookService
     @Override
     public Printable getPrintable(int pageIndex) throws IndexOutOfBoundsException {
         return null;
+    }
+
+    public static BookServiceImpl getInstance(){
+        if (bookService==null){
+            bookService = new BookServiceImpl();
+        }
+        return bookService;
     }
 }
