@@ -1,5 +1,6 @@
 package com.company.lib.service.auth;
 
+import com.company.lib.configs.ApplicationContextHolder;
 import com.company.lib.dao.AbstractDAO;
 import com.company.lib.dao.UserDAO;
 import com.company.lib.domains.User;
@@ -10,6 +11,9 @@ import com.company.lib.dto.auth.UserUpdateDTO;
 import com.company.lib.exceptions.AuthenticationException;
 import com.company.lib.exceptions.InvalidInputException;
 import com.company.lib.exceptions.NotFoundException;
+import com.company.lib.utils.BaseUtils;
+
+import java.util.Optional;
 
 /**
  * @author "Khazratov Aslonbek"
@@ -18,15 +22,39 @@ import com.company.lib.exceptions.NotFoundException;
  */
 public class UserServiceImpl extends AbstractDAO<UserDAO> implements UserService {
 
+    private static UserServiceImpl userService;
 
+    private final BaseUtils baseUtils = ApplicationContextHolder.getBean(BaseUtils.class);
+    public UserServiceImpl() {
+        super(ApplicationContextHolder.getBean(UserDAO.class));
+    }
 
-    public UserServiceImpl(UserDAO dao) {
-        super(ApplicaCon);
+    public static UserServiceImpl getInstance() {
+        if (userService==null){
+            userService = new UserServiceImpl();
+        }
+        return userService;
     }
 
     @Override
     public UserDTO create(UserCreateDTO userCreateDTO) throws InvalidInputException {
-        return null;
+        Optional<User> byEmail = dao.findByEmail(userCreateDTO.getEmail());
+        if (byEmail.isPresent()) {
+            throw new InvalidInputException("User by email %s already exists".formatted(byEmail.get()));
+        }
+        User user = User.builder()
+                .email(userCreateDTO.getEmail())
+                .name(userCreateDTO.getName())
+                .password(baseUtils.encode(userCreateDTO.getPassword()))
+                .surname(userCreateDTO.getSurname())
+                .build();
+        User savedUser = dao.save(user);
+        return UserDTO.builder()
+                .id(savedUser.getId())
+                .email(savedUser.getEmail())
+                .surname(savedUser.getSurname())
+                .name(savedUser.getName())
+                .build();
     }
 
     @Override
@@ -46,11 +74,34 @@ public class UserServiceImpl extends AbstractDAO<UserDAO> implements UserService
 
     @Override
     public UserDTO login(UserLoginDTO dto) throws InvalidInputException, AuthenticationException {
-        return null;
+        String email = dto.getEmail();
+        Optional<User> byEmail = dao.findByEmail(email);
+        User user = byEmail.orElseThrow(() -> new InvalidInputException("user not found by email %s".formatted(email)));
+
+        if (!baseUtils.matchPassword(dto.getPassword(),user.getPassword())){
+
+            throw new AuthenticationException("Bad credentials");
+        }
+        return UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .build();
     }
 
     @Override
     public UserDTO getByEmail(String email) throws NotFoundException {
-        return null;
+
+        Optional<User> byEmail = dao.findByEmail(email);
+        User user = byEmail.orElseThrow(() -> new NotFoundException("User not found by email"));
+
+
+
+        return UserDTO.builder()
+                .id(user.getId())
+                .status(user.getStatus())
+                .email(user.getEmail())
+                .build();
     }
 }
