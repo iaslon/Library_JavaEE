@@ -11,6 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-
+${error.message}
+${error.path}
+${error.timestamp}
 </body>
 </html>
