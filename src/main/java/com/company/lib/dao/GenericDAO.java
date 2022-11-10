@@ -61,7 +61,7 @@ public class GenericDAO<T, ID> implements BaseDAO {
         return resultList;
     }
 
-    private T findById(ID id) {
+    public T findById(ID id) {
 
         Session session = getSession();
         session.beginTransaction();

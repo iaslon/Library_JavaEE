@@ -14,7 +14,7 @@ import java.io.IOException;
  * Library_JavaEE/IntelliJ IDEA
  */
 
-@WebServlet("logout")
+@WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
     @Override

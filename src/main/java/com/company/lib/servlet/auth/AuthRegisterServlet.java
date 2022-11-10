@@ -7,6 +7,7 @@ import com.company.lib.service.auth.UserServiceImpl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @since 11/09/2022 05:23 (Wednesday)
  * Library_JavaEE/IntelliJ IDEA
  */
+@WebServlet("/register")
 public class AuthRegisterServlet extends HttpServlet {
 
     private final UserServiceImpl userService = ApplicationContextHolder.getBean(UserServiceImpl.class);
